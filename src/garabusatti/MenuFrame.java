@@ -1,7 +1,7 @@
 package garabusatti;
 
 /**
- * Menu iniziale - scegli quale moto tifare
+ * Menu iniziale della scelta delle moto
  */
 public class MenuFrame extends javax.swing.JFrame {
 
