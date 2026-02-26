@@ -44,12 +44,12 @@ public class GaraFrame extends javax.swing.JFrame {
         garaIniziata = true;
         btnAvvia.setEnabled(false);
         
-        // Crea i 5 thread 
-        threads[0] = new MotoThread(barMoto1, lblMoto1, nomiMoto[0]);
-        threads[1] = new MotoThread(barMoto2, lblMoto2, nomiMoto[1]);
-        threads[2] = new MotoThread(barMoto3, lblMoto3, nomiMoto[2]);
-        threads[3] = new MotoThread(barMoto4, lblMoto4, nomiMoto[3]);
-        threads[4] = new MotoThread(barMoto5, lblMoto5, nomiMoto[4]);
+        /// Crea i 5 thread passandogli: il Frame (this), l'indice, la barra, la label e il nome
+        threads[0] = new MotoThread(this, 0, barMoto1, lblMoto1, nomiMoto[0]);
+        threads[1] = new MotoThread(this, 1, barMoto2, lblMoto2, nomiMoto[1]);
+        threads[2] = new MotoThread(this, 2, barMoto3, lblMoto3, nomiMoto[2]);
+        threads[3] = new MotoThread(this, 3, barMoto4, lblMoto4, nomiMoto[3]);
+        threads[4] = new MotoThread(this, 4, barMoto5, lblMoto5, nomiMoto[4]);
         
         // Avvia tutti i 5 thread contemporaneamente
         for (int i = 0; i < 5; i++) {
