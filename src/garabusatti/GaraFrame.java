@@ -1,72 +1,41 @@
 package garabusatti;
 
-
 public class GaraFrame extends javax.swing.JFrame {
     
-    // Array dei 5 thread 
-    private MotoThread[] threads = new MotoThread[5];
-    private boolean garaIniziata = false;
-    private int motoScelta = 0;
+    // ========== DICHIARAZIONE VARIABILI ==========
+    private MotoThread[] threads;
+    private boolean garaIniziata;
+    private int motoScelta;
+    private String[] nomiMoto;
+    private javax.swing.ImageIcon[] icone;
     
-  
-    private String[] nomiMoto = {"Honda", "Kawasaki", "KTM", "Suzuki", "Yamaha"};
-    
- 
-    private javax.swing.ImageIcon[] icone = new javax.swing.ImageIcon[5];
-
-    // Costruttore con scelta moto
+     //Indice della moto scelta (0=Honda, 1=Kawasaki, 2=KTM, 3=Suzuki, 4=Yamaha)
+     
     public GaraFrame(int motoScelta) {
+        // Inizializza le variabili
+        this.threads = new MotoThread[5];
+        this.garaIniziata = false;
         this.motoScelta = motoScelta;
+        this.nomiMoto = new String[]{"Honda", "Kawasaki", "KTM", "Suzuki", "Yamaha"};
+        this.icone = new javax.swing.ImageIcon[5];
+        
+        
         initComponents();
         caricaImmagini();
         impostaLabels();
     }
     
- 
+    /**
+     * Costruttore senza parametri (default Honda)
+     */
     public GaraFrame() {
         this(0);
     }
     
-  
-    private void caricaImmagini() {
-        try {
-            for (int i = 0; i < 5; i++) {
-                java.net.URL imgURL = getClass().getResource("/immagini/" + nomiMoto[i] + ".png");
-                if (imgURL != null) {
-                    // Ridimensiona l'immagine a 40x25 per le label
-                    java.awt.Image img = new javax.swing.ImageIcon(imgURL).getImage();
-                    java.awt.Image scaledImg = img.getScaledInstance(40, 25, java.awt.Image.SCALE_SMOOTH);
-                    icone[i] = new javax.swing.ImageIcon(scaledImg);
-                }
-            }
-        } catch (Exception ex) {
-            // Se le immagini non ci sono, usa solo il testo
-        }
-    }
-    
    
-    private void impostaLabels() {
-        javax.swing.JLabel[] labels = {lblMoto1, lblMoto2, lblMoto3, lblMoto4, lblMoto5};
-        
-        for (int i = 0; i < 5; i++) {
-            String testo = nomiMoto[i];
-            
-          
-            if (i == motoScelta) {
-                testo = "▼ TU ▼  " + testo;
-            }
-            
-            // Imposta testo + immagine
-            labels[i].setText(testo);
-            if (icone[i] != null) {
-                labels[i].setIcon(icone[i]);
-            }
-        }
-    }
-
+     //bottone AVVIA GARA crea e avia i 5 thread
     
     private void btnAvviaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvviaActionPerformed
-        
         if (garaIniziata) {
             javax.swing.JOptionPane.showMessageDialog(this, "Gara già in corso!");
             return;
@@ -82,73 +51,90 @@ public class GaraFrame extends javax.swing.JFrame {
         threads[3] = new MotoThread(barMoto4, lblMoto4, nomiMoto[3]);
         threads[4] = new MotoThread(barMoto5, lblMoto5, nomiMoto[4]);
         
-
+        // Avvia tutti i 5 thread contemporaneamente
         for (int i = 0; i < 5; i++) {
             threads[i].start();
         }
         
-    
-        new Thread(new Runnable() {
-            public void run() {
-                controllaVincitore();
-            }
-        }).start();
-        
-    }
+    }//GEN-LAST:event_btnAvviaActionPerformed
 
+    
+     // bottone RESET ferma i therd delle moto
+    
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        
-        // Interrompi i thread
+        // Interrompi thread
         if (threads[0] != null) {
             for (int i = 0; i < 5; i++) {
                 threads[i].interrupt();
             }
         }
         
-        // Resetta le barre dell avanzamento
+        // Resetta le barre di avanzamento
         barMoto1.setValue(0);
         barMoto2.setValue(0);
         barMoto3.setValue(0);
         barMoto4.setValue(0);
         barMoto5.setValue(0);
         
-        // Resetta le etichette ovvero la scritta sopra
+        // Resetta le etichette
         impostaLabels();
         
         garaIniziata = false;
         btnAvvia.setEnabled(true);
+    }//GEN-LAST:event_btnResetActionPerformed
+
+   //metodo carica png delle moto
+    private void caricaImmagini() {
         
-    }
-    private void controllaVincitore() {
-        while (true) {
-            // Controlla ogni thread per vedere chi completa prima la progress bar
             for (int i = 0; i < 5; i++) {
-                if (threads[i].isArrivato()) {
-       
-                    String vincitore = threads[i].getName().replace("Thread-", "");
-                    
-                    // Messaggio se hai vinto
-                    String msg;
-                    if (i == motoScelta) {
-                        msg = "🏆🏆🏆 HAI VINTO! 🏆🏆🏆\n\nLa tua " + vincitore + " è arrivata prima!";
-                    } else {
-                        msg = "🏁 Ha vinto: " + vincitore + " 🏁\n\nLa tua " + nomiMoto[motoScelta] + " non ce l'ha fatta...";
-                    }
-                    
-                    javax.swing.JOptionPane.showMessageDialog(null, msg);
-                    return; // esce dal loop
+                java.net.URL imgURL = getClass().getResource("/immagini/" + nomiMoto[i] + ".png");
+                if (imgURL != null) {
+                    // Ridimensiona l'immagine adatta alla dimensione label che ho deciso
+                    java.awt.Image img = new javax.swing.ImageIcon(imgURL).getImage();
+                    java.awt.Image scaledImg = img.getScaledInstance(40, 25, java.awt.Image.SCALE_SMOOTH);
+                    icone[i] = new javax.swing.ImageIcon(scaledImg);
                 }
             }
+         
+    }
+    
+    //imposto le libel e la freccia su io la moto che ho scelto
+    private void impostaLabels() {
+        javax.swing.JLabel[] labels = {lblMoto1, lblMoto2, lblMoto3, lblMoto4, lblMoto5};
+        
+        for (int i = 0; i < 5; i++) {
+            String testo = nomiMoto[i];
             
-            // Aspetta un po' prima di ricontrollare
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                return;
+            // Aggiungi freccia
+            if (i == motoScelta) {
+                testo = "▼ TU ▼  " + testo;
+            }
+            
+            // Imposta testo e png
+            labels[i].setText(testo);
+            if (icone[i] != null) {
+                labels[i].setIcon(icone[i]);
             }
         }
     }
-
+    
+    /**
+     * Controlla continuamente quale moto arriva prima al 100%
+     */
+public void controllaVincitore(String nomeMoto, int indiceMoto) {
+    if (garaIniziata) { // Se nessuno ha ancora vinto
+        garaIniziata = false; // Ferma la gara così gli altri thread non entrano!
+        
+        // Prepara il messaggio
+        String msg = (indiceMoto == motoScelta) ?
+            "🏆🏆🏆 HAI VINTO! 🏆🏆🏆\n\nLa tua " + nomeMoto + " è arrivata prima!" : 
+            "🏁 Ha vinto: " + nomeMoto + " 🏁\n\nLa tua moto non ce l'ha fatta...";
+        
+        // ECCO LA FINESTRELLA POP-UP!
+        javax.swing.JOptionPane.showMessageDialog(this, msg);
+    }
+}
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -302,17 +288,9 @@ public class GaraFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+ 
 
-    public static void main(String args[]) {
-        
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GaraFrame().setVisible(true);
-            }
-        });
-    }
-
-
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar barMoto1;
     private javax.swing.JProgressBar barMoto2;
     private javax.swing.JProgressBar barMoto3;
@@ -327,4 +305,5 @@ public class GaraFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblMoto3;
     private javax.swing.JLabel lblMoto4;
     private javax.swing.JLabel lblMoto5;
+    // End of variables declaration//GEN-END:variables
 }

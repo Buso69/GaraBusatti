@@ -6,41 +6,50 @@ import javax.swing.JProgressBar;
 
 public class MotoThread extends Thread {
     
+    private GaraFrame frame;
     private final JProgressBar barra;      
     private final JLabel lblNome;         
     private final String nomeMoto;      
-    private boolean arrivato = false;      
+    private boolean arrivato;
     
-    public MotoThread(JProgressBar barra, JLabel lblNome, String nomeMoto) {
+    // ========== COSTRUTTORE ==========
+
+    public MotoThread(GaraFrame frame,JProgressBar barra, JLabel lblNome, String nomeMoto) {
+        this.frame = frame;
         this.barra = barra;
         this.lblNome = lblNome;
         this.nomeMoto = nomeMoto;
-        this.setName("Thread-" + nomeMoto); // nome del thread
+        this.arrivato = false;
+        this.setName("Thread-" + nomeMoto);
     }
+    
+    // ========== METODI GET/SET ==========
     
     public boolean isArrivato() {
         return arrivato;
     }
     
+    // ========== METODI PUBBLICI ==========
+    
     @Override
     public void run() {
-        // Velocità casuale tra 5 e 15
+        // Velocità casuale tra 5 e 15 millisecondi
         int velocita = 5 + (int)(Math.random() * 10);
         
-        // Fai correre la moto fino al 100%
+        // Fai correre la moto da 0 a 100%
         for (int posizione = 0; posizione <= 100; posizione++) {
             
-            // Aggiorna la barra che scorre
+            // Aggiorna la barra
             barra.setValue(posizione);
             
-            // Se arriva al 100 ogicamnete hai vinto
+            // Se arriva al 100 ha vinto 
             if (posizione == 100) {
                 arrivato = true;
                 lblNome.setText(nomeMoto + " - ARRIVATO! 🏆");
             }
             
             try {
-                // Aspetta un po varia la velocita
+                // Aspetta un po', varia leggermente la velocità
                 int pausa = velocita + (int)(Math.random() * 5) - 2;
                 Thread.sleep(pausa);
             } catch (InterruptedException ex) {

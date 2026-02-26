@@ -1,44 +1,50 @@
 package garabusatti;
 
 /**
- * Menu iniziale della scelta delle moto
+ * Menu iniziale - selezione della moto da tifare
+ * @author [TUO NOME]
  */
 public class MenuFrame extends javax.swing.JFrame {
-
+    
+    // COSTRUTTORE CHE CREA TUTTO
+    
     public MenuFrame() {
         initComponents();
     }
-
-    // Bottone Honda
+    
+    // EVENNI DEI BOTTONI
+    
+   //honda
     private void btnHondaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHondaActionPerformed
-        new GaraFrame(0).setVisible(true); // 0 = Honda
+        new GaraFrame(0).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnHondaActionPerformed
 
-    // Bottone Kawasaki
+   //kawasaki
     private void btnKawasakiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKawasakiActionPerformed
-        new GaraFrame(1).setVisible(true); // 1 = Kawasaki
+        new GaraFrame(1).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnKawasakiActionPerformed
 
-    // Bottone KTM
+    //ktm
     private void btnKTMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKTMActionPerformed
-        new GaraFrame(2).setVisible(true); // 2 = KTM
+        new GaraFrame(2).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnKTMActionPerformed
 
-    // Bottone Suzuki
+   //suzuki
     private void btnSuzukiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuzukiActionPerformed
-        new GaraFrame(3).setVisible(true); // 3 = Suzuki
+        new GaraFrame(3).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSuzukiActionPerformed
 
-    // Bottone Yamaha
+   //yamaha
     private void btnYamahaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnYamahaActionPerformed
-        new GaraFrame(4).setVisible(true); // 4 = Yamaha
+        new GaraFrame(4).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnYamahaActionPerformed
 
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -147,13 +153,6 @@ public class MenuFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenuFrame().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHonda;
