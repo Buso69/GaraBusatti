@@ -21,7 +21,7 @@ public class GaraFrame extends javax.swing.JFrame {
     }
     
    
-    // Aggiunge una riga alla cronaca (chiamabile anche dai thread)
+    // Aggiunge una riga alla cronaca 
     public void aggiungiCronaca(String messaggio) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             txtCronaca.append(messaggio + "\n");
