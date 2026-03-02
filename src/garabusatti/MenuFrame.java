@@ -1,9 +1,6 @@
 package garabusatti;
 
-/**
- * Menu iniziale - selezione della moto da tifare
- * @author [TUO NOME]
- */
+//menu selezione della tua moto
 public class MenuFrame extends javax.swing.JFrame {
     
     // COSTRUTTORE CHE CREA TUTTO

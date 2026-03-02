@@ -41,6 +41,15 @@ public class MotoThread extends Thread {
             
             barra.setValue(posizione);
             
+            // Cronaca ai traguardi intermedi
+            if (posizione == 25) {
+                frame.aggiungiCronaca("📍 " + nomeMoto + " al 25%");
+            } else if (posizione == 50) {
+                frame.aggiungiCronaca("📍 " + nomeMoto + " a metà gara!");
+            } else if (posizione == 75) {
+                frame.aggiungiCronaca("📍 " + nomeMoto + " al 75% - finale!");
+            }
+            
             if (posizione == 100) {
                 arrivato = true;
                 lblNome.setText(nomeMoto + " - ARRIVATO! 🏆");
@@ -48,7 +57,7 @@ public class MotoThread extends Thread {
             }
             
             try {
-                int pausa = velocita + (int)(Math.random() * 5) - 2;
+                int pausa = velocita + (int)(Math.random() * 100) - 2;
                 Thread.sleep(pausa);
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();

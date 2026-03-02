@@ -2,40 +2,37 @@ package garabusatti;
 
 public class GaraFrame extends javax.swing.JFrame {
     
-    // ========== DICHIARAZIONE VARIABILI ==========
     private MotoThread[] threads;
     private boolean garaIniziata;
     private int motoScelta;
     private String[] nomiMoto;
     private javax.swing.ImageIcon[] icone;
     
-     //Indice della moto scelta (0=Honda, 1=Kawasaki, 2=KTM, 3=Suzuki, 4=Yamaha)
-     
     public GaraFrame(int motoScelta) {
-        // Inizializza le variabili
         this.threads = new MotoThread[5];
         this.garaIniziata = false;
         this.motoScelta = motoScelta;
         this.nomiMoto = new String[]{"Honda", "Kawasaki", "KTM", "Suzuki", "Yamaha"};
         this.icone = new javax.swing.ImageIcon[5];
         
-        
         initComponents();
         caricaImmagini();
         impostaLabels();
     }
     
-    /**
-     * Costruttore 
-     */
     public GaraFrame() {
-
+        this(0);
     }
     
-   
-     //bottone AVVIA GARA crea e avia i 5 thread
+    // Aggiunge una riga alla cronaca (chiamabile anche dai thread)
+    public void aggiungiCronaca(String messaggio) {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            txtCronaca.append(messaggio + "\n");
+            txtCronaca.setCaretPosition(txtCronaca.getDocument().getLength());
+        });
+    }
     
-    private void btnAvviaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvviaActionPerformed
+    private void btnAvviaActionPerformed(java.awt.event.ActionEvent evt) {
         if (garaIniziata) {
             javax.swing.JOptionPane.showMessageDialog(this, "Gara già in corso!");
             return;
@@ -43,74 +40,59 @@ public class GaraFrame extends javax.swing.JFrame {
         
         garaIniziata = true;
         btnAvvia.setEnabled(false);
+        txtCronaca.setText("");
+        aggiungiCronaca("🚦 GARA INIZIATA!");
         
-        /// Crea i 5 thread passandogli: il Frame (this), l'indice, la barra, la label e il nome
         threads[0] = new MotoThread(this, 0, barMoto1, lblMoto1, nomiMoto[0]);
         threads[1] = new MotoThread(this, 1, barMoto2, lblMoto2, nomiMoto[1]);
         threads[2] = new MotoThread(this, 2, barMoto3, lblMoto3, nomiMoto[2]);
         threads[3] = new MotoThread(this, 3, barMoto4, lblMoto4, nomiMoto[3]);
         threads[4] = new MotoThread(this, 4, barMoto5, lblMoto5, nomiMoto[4]);
         
-        // Avvia tutti i 5 thread contemporaneamente
         for (int i = 0; i < 5; i++) {
             threads[i].start();
         }
-        
-    }//GEN-LAST:event_btnAvviaActionPerformed
+    }
 
-    
-     // bottone RESET ferma i therd delle moto
-    
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        // Interrompi thread
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {
         if (threads[0] != null) {
             for (int i = 0; i < 5; i++) {
                 threads[i].interrupt();
             }
         }
         
-        // Resetta le progress barr
         barMoto1.setValue(0);
         barMoto2.setValue(0);
         barMoto3.setValue(0);
         barMoto4.setValue(0);
         barMoto5.setValue(0);
         
-        // Resetta le etichette
         impostaLabels();
+        txtCronaca.setText("🔄 Gara resettata. Premi AVVIA per una nuova gara.\n");
         
         garaIniziata = false;
         btnAvvia.setEnabled(true);
-    }//GEN-LAST:event_btnResetActionPerformed
+    }
 
-   //metodo carica png delle moto
     private void caricaImmagini() {
-        
-            for (int i = 0; i < 5; i++) {
-                java.net.URL imgURL = getClass().getResource("/immagini/" + nomiMoto[i] + ".png");
-                if (imgURL != null) {
-                    // Ridimensiona l'immagine 
-                    java.awt.Image img = new javax.swing.ImageIcon(imgURL).getImage();
-                    java.awt.Image scaledImg = img.getScaledInstance(40, 25, java.awt.Image.SCALE_SMOOTH);
-                    icone[i] = new javax.swing.ImageIcon(scaledImg);
-                }
+        for (int i = 0; i < 5; i++) {
+            java.net.URL imgURL = getClass().getResource("/immagini/" + nomiMoto[i] + ".png");
+            if (imgURL != null) {
+                java.awt.Image img = new javax.swing.ImageIcon(imgURL).getImage();
+                java.awt.Image scaledImg = img.getScaledInstance(40, 25, java.awt.Image.SCALE_SMOOTH);
+                icone[i] = new javax.swing.ImageIcon(scaledImg);
             }
-         
+        }
     }
     
-    //imposto le libel e la freccia sukla mia moto
     private void impostaLabels() {
         javax.swing.JLabel[] labels = {lblMoto1, lblMoto2, lblMoto3, lblMoto4, lblMoto5};
         
         for (int i = 0; i < 5; i++) {
             String testo = nomiMoto[i];
-            
-            // Aggiungi freccia
             if (i == motoScelta) {
                 testo = "▼ TU ▼  " + testo;
             }
-            
-            // Imposta testo e png
             labels[i].setText(testo);
             if (icone[i] != null) {
                 labels[i].setIcon(icone[i]);
@@ -118,27 +100,23 @@ public class GaraFrame extends javax.swing.JFrame {
         }
     }
     
-    /**
-     * Controlla continuamente quale moto arriva prima al 100%
-     * @param nomeMoto
-     * @param indiceMoto
-     */
-public void controllaVincitore(String nomeMoto, int indiceMoto) {
-    if (garaIniziata) { 
-        garaIniziata = false; // Ferma la gara 
-        
-        // messaggio di vincita
-        String msg = (indiceMoto == motoScelta) ?
-            "🏆🏆🏆 HAI VINTO! 🏆🏆🏆\n\nLa tua " + nomeMoto + " è arrivata prima!" : 
-            "🏁 Ha vinto: " + nomeMoto + " 🏁\n\nLa tua moto non ce l'ha fatta...";
-        
-        // finestrina
-        javax.swing.JOptionPane.showMessageDialog(this, msg);
+    public void controllaVincitore(String nomeMoto, int indiceMoto) {
+        if (garaIniziata) {
+            garaIniziata = false;
+            
+            String msg = (indiceMoto == motoScelta) ?
+                "🏆🏆🏆 HAI VINTO! 🏆🏆🏆\n\nLa tua " + nomeMoto + " è arrivata prima!" : 
+                "🏁 Ha vinto: " + nomeMoto + " 🏁\n\nLa tua moto non ce l'ha fatta...";
+            
+            aggiungiCronaca("🏆 VINCITORE: " + nomeMoto + "!");
+            
+            javax.swing.JOptionPane.showMessageDialog(this, msg);
+        } else {
+            aggiungiCronaca("🏁 " + nomeMoto + " ha tagliato il traguardo.");
+        }
     }
-}
     
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
@@ -155,34 +133,30 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
         barMoto5 = new javax.swing.JProgressBar();
         btnAvvia = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
+        
+        // --- PANNELLO CRONACA ---
+        jPanelCronaca = new javax.swing.JPanel();
+        txtCronaca = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gara Moto - Thread");
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("🏍 GARA MOTO CON THREAD 🏍");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Gara in Corso"));
 
         lblMoto1.setText("🏍 Honda");
-
         barMoto1.setStringPainted(true);
-
         lblMoto2.setText("🏍 Kawasaki");
-
         barMoto2.setStringPainted(true);
-
         lblMoto3.setText("🏍 KTM");
-
         barMoto3.setStringPainted(true);
-
         lblMoto4.setText("🏍 Suzuki");
-
         barMoto4.setStringPainted(true);
-
         lblMoto5.setText("🏍 Yamaha");
-
         barMoto5.setStringPainted(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -240,7 +214,32 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btnAvvia.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        // --- SETUP CRONACA ---
+        jPanelCronaca.setBorder(javax.swing.BorderFactory.createTitledBorder("📋 Cronaca di Gara"));
+        txtCronaca.setEditable(false);
+        txtCronaca.setFont(new java.awt.Font("Monospaced", 0, 12));
+        txtCronaca.setRows(6);
+        txtCronaca.setText("In attesa della gara...\n");
+        jScrollPane1.setViewportView(txtCronaca);
+        
+        javax.swing.GroupLayout jPanelCronacaLayout = new javax.swing.GroupLayout(jPanelCronaca);
+        jPanelCronaca.setLayout(jPanelCronacaLayout);
+        jPanelCronacaLayout.setHorizontalGroup(
+            jPanelCronacaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCronacaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelCronacaLayout.setVerticalGroup(
+            jPanelCronacaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCronacaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        btnAvvia.setFont(new java.awt.Font("Segoe UI", 1, 14));
         btnAvvia.setText("▶ AVVIA GARA");
         btnAvvia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -248,7 +247,7 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
             }
         });
 
-        btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14));
         btnReset.setText("🔄 RESET");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -265,6 +264,7 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelCronaca, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnAvvia, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -279,6 +279,8 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelCronaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAvvia, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -288,11 +290,8 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
- 
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar barMoto1;
     private javax.swing.JProgressBar barMoto2;
     private javax.swing.JProgressBar barMoto3;
@@ -302,10 +301,12 @@ public void controllaVincitore(String nomeMoto, int indiceMoto) {
     private javax.swing.JButton btnReset;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanelCronaca;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea txtCronaca;
     private javax.swing.JLabel lblMoto1;
     private javax.swing.JLabel lblMoto2;
     private javax.swing.JLabel lblMoto3;
     private javax.swing.JLabel lblMoto4;
     private javax.swing.JLabel lblMoto5;
-    // End of variables declaration//GEN-END:variables
 }
