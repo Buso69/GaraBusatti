@@ -13,7 +13,7 @@ public class MotoThread extends Thread {
     private final String nomeMoto;      
     private boolean arrivato;
     
-    // ========== COSTRUTTORE ==========
+    //cost.
 
     public MotoThread(GaraFrame frame, int indice, JProgressBar barra, JLabel lblNome, String nomeMoto) {
         this.frame = frame;
@@ -49,7 +49,7 @@ public class MotoThread extends Thread {
             } else if (posizione == 75) {
                 frame.aggiungiCronaca("📍 " + nomeMoto + " al 75% - finale!");
             }
-            
+            //controllo vincitore dalla progress
             if (posizione == 100) {
                 arrivato = true;
                 lblNome.setText(nomeMoto + " - ARRIVATO! 🏆");

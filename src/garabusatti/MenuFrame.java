@@ -3,8 +3,7 @@ package garabusatti;
 //menu selezione della tua moto
 public class MenuFrame extends javax.swing.JFrame {
     
-    // COSTRUTTORE CHE CREA TUTTO
-    
+    // cost.
     public MenuFrame() {
         initComponents();
     }

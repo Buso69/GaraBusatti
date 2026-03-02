@@ -96,7 +96,7 @@ public class GaraFrame extends javax.swing.JFrame {
             }
         }
     }
-    
+    //questo e un controllo vincitore che serve per la cronaca della moto
     public void controllaVincitore(String nomeMoto, int indiceMoto) {
         if (garaIniziata) {
             garaIniziata = false;
