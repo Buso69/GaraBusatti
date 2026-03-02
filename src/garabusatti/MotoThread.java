@@ -7,6 +7,7 @@ import javax.swing.JProgressBar;
 public class MotoThread extends Thread {
     
     private GaraFrame frame;
+    private final int indice;
     private final JProgressBar barra;      
     private final JLabel lblNome;         
     private final String nomeMoto;      
@@ -14,8 +15,9 @@ public class MotoThread extends Thread {
     
     // ========== COSTRUTTORE ==========
 
-    public MotoThread(GaraFrame frame,JProgressBar barra, JLabel lblNome, String nomeMoto) {
+    public MotoThread(GaraFrame frame, int indice, JProgressBar barra, JLabel lblNome, String nomeMoto) {
         this.frame = frame;
+        this.indice = indice;
         this.barra = barra;
         this.lblNome = lblNome;
         this.nomeMoto = nomeMoto;
@@ -33,23 +35,19 @@ public class MotoThread extends Thread {
     
     @Override
     public void run() {
-        // Velocità casuale tra 5 e 15 millisecondi
         int velocita = 5 + (int)(Math.random() * 10);
         
-        // Fai correre la moto da 0 a 100%
         for (int posizione = 0; posizione <= 100; posizione++) {
             
-            // Aggiorna la barra
             barra.setValue(posizione);
             
-            // Se arriva al 100 ha vinto 
             if (posizione == 100) {
                 arrivato = true;
                 lblNome.setText(nomeMoto + " - ARRIVATO! 🏆");
+                frame.controllaVincitore(nomeMoto, indice);
             }
             
             try {
-                // Aspetta un po', varia leggermente la velocità
                 int pausa = velocita + (int)(Math.random() * 5) - 2;
                 Thread.sleep(pausa);
             } catch (InterruptedException ex) {

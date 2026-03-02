@@ -26,10 +26,10 @@ public class GaraFrame extends javax.swing.JFrame {
     }
     
     /**
-     * Costruttore senza parametri (default Honda)
+     * Costruttore 
      */
     public GaraFrame() {
-        this(0);
+
     }
     
    
@@ -69,7 +69,7 @@ public class GaraFrame extends javax.swing.JFrame {
             }
         }
         
-        // Resetta le barre di avanzamento
+        // Resetta le progress barr
         barMoto1.setValue(0);
         barMoto2.setValue(0);
         barMoto3.setValue(0);
@@ -89,7 +89,7 @@ public class GaraFrame extends javax.swing.JFrame {
             for (int i = 0; i < 5; i++) {
                 java.net.URL imgURL = getClass().getResource("/immagini/" + nomiMoto[i] + ".png");
                 if (imgURL != null) {
-                    // Ridimensiona l'immagine adatta alla dimensione label che ho deciso
+                    // Ridimensiona l'immagine 
                     java.awt.Image img = new javax.swing.ImageIcon(imgURL).getImage();
                     java.awt.Image scaledImg = img.getScaledInstance(40, 25, java.awt.Image.SCALE_SMOOTH);
                     icone[i] = new javax.swing.ImageIcon(scaledImg);
@@ -98,7 +98,7 @@ public class GaraFrame extends javax.swing.JFrame {
          
     }
     
-    //imposto le libel e la freccia su io la moto che ho scelto
+    //imposto le libel e la freccia sukla mia moto
     private void impostaLabels() {
         javax.swing.JLabel[] labels = {lblMoto1, lblMoto2, lblMoto3, lblMoto4, lblMoto5};
         
@@ -120,17 +120,19 @@ public class GaraFrame extends javax.swing.JFrame {
     
     /**
      * Controlla continuamente quale moto arriva prima al 100%
+     * @param nomeMoto
+     * @param indiceMoto
      */
 public void controllaVincitore(String nomeMoto, int indiceMoto) {
-    if (garaIniziata) { // Se nessuno ha ancora vinto
-        garaIniziata = false; // Ferma la gara così gli altri thread non entrano!
+    if (garaIniziata) { 
+        garaIniziata = false; // Ferma la gara 
         
-        // Prepara il messaggio
+        // messaggio di vincita
         String msg = (indiceMoto == motoScelta) ?
             "🏆🏆🏆 HAI VINTO! 🏆🏆🏆\n\nLa tua " + nomeMoto + " è arrivata prima!" : 
             "🏁 Ha vinto: " + nomeMoto + " 🏁\n\nLa tua moto non ce l'ha fatta...";
         
-        // ECCO LA FINESTRELLA POP-UP!
+        // finestrina
         javax.swing.JOptionPane.showMessageDialog(this, msg);
     }
 }
