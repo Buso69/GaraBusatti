@@ -25,13 +25,13 @@ public class MotoThread extends Thread {
         this.setName("Thread-" + nomeMoto);
     }
     
-    // ========== METODI GET/SET ==========
+   
     
     public boolean isArrivato() {
         return arrivato;
     }
     
-    // ========== METODI PUBBLICI ==========
+    
     
     @Override
     public void run() {
@@ -41,7 +41,7 @@ public class MotoThread extends Thread {
             
             barra.setValue(posizione);
             
-            // Cronaca ai traguardi intermedi
+            // Cronaca ai traguardi intermedi cosi da capire meglio come procede tutto
             if (posizione == 25) {
                 frame.aggiungiCronaca("📍 " + nomeMoto + " al 25%");
             } else if (posizione == 50) {

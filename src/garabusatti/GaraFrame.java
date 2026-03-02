@@ -20,10 +20,7 @@ public class GaraFrame extends javax.swing.JFrame {
         impostaLabels();
     }
     
-    public GaraFrame() {
-        this(0);
-    }
-    
+   
     // Aggiunge una riga alla cronaca (chiamabile anche dai thread)
     public void aggiungiCronaca(String messaggio) {
         javax.swing.SwingUtilities.invokeLater(() -> {
